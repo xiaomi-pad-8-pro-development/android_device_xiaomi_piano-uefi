@@ -1,4 +1,4 @@
-# Xiaomi Pad 8 Pro (piano) UEFI
+# UEFI for the Xiaomi Pad 8 Pro (piano)
 
 UEFI firmware and the Visor boot manager for the Xiaomi Pad 8 Pro (SM8750),
 loaded from the Android boot image. Visor starts Android, Linux and other
