@@ -71,7 +71,7 @@ It only removes an ESP the installer made (it checks a receipt saved in
 `/data/adb/piano-uefi/`). A factory reset deletes that receipt.
 
 > Making and removing the ESP is new and not yet tested on a tablet.
-> Back up your data first. Details: [docs/esp-installer.md](docs/esp-installer.md).
+> Back up your data first. Details: [docs/esp-installer.md](esp-installer.md).
 
 ## Build
 
