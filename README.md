@@ -11,13 +11,7 @@ ABL ──► boot.img (kernel + selector + UEFI)
           └─ volume up      recovery
 ```
 
-| Feature | State |
-| --- | --- |
-| Visor, Android from Visor | Works |
-| Keys, reboot, shut down | Works |
-| Debug fastboot (`piano-uefi`) | Works |
-| ESP installer zips | Built, not tested on a tablet |
-| Linux from Visor | Not yet |
+> Status: worked on the HyperOS 4.0.0.44 firmware. Being retested on 4.0.5 and the current ROM.
 
 ## Install
 
