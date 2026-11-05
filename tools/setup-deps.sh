@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: BSD-2-Clause-Patent
 # Set up deps/ for a UEFI build: Mu-Silicium at the tested commit, our
-# Mu_Basecore changes, and links to pianoPkg, its config and the bundled
+# Mu_Basecore and BootShim changes, and links to pianoPkg, its config and the bundled
 # Qualcomm drivers (uefi/Binaries/piano). Run from anywhere; safe to rerun.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -15,6 +15,7 @@ if [ ! -d "$mu" ]; then
 	git -C "$mu" checkout -q "$MU_COMMIT"
 	git -C "$mu" submodule update -q --init --recursive
 	git -C "$mu/Mu_Basecore" apply "$PWD/uefi/patches/mu-basecore.patch"
+	git -C "$mu" apply "$PWD/uefi/patches/bootshim.patch"
 fi
 
 link() {
