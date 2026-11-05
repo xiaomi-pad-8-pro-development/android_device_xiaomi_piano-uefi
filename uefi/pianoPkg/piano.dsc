@@ -106,6 +106,13 @@
 [LibraryClasses]
   SerialPortLib|pianoPkg/Library/MemorySerialPortLib/MemorySerialPortLib.inf
 
+!ifdef UNIXNU
+[LibraryClasses]
+  HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
+  FdtLib|MdePkg/Library/BaseFdtLib/BaseFdtLib.inf
+  UniXNULib|UniXNUPkg/Library/UniXNULib/UniXNULib.inf
+!endif
+
 [LibraryClasses.common.SEC]
   SerialPortLib|pianoPkg/Library/MemorySerialPortLib/MemorySerialPortLibSec.inf
 
@@ -126,6 +133,18 @@
   #piano/AcpiTables.inf
 
 [Components]
+  #
+  # UniXNU: boot menu, boot option, XNU loader and the RAM payload
+  # (https://unixnu.com/porting/uefi-firmware). The packages come from the
+  # UniXNU build tree through PACKAGES_PATH.
+  #
+!ifdef UNIXNU
+  UniXNUPkg/Application/UniXNU/UniXNU.inf
+  UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
+  UniXNUPkg/Driver/UniXNURamDiskDxe/UniXNURamDiskDxe.inf
+  DarwinBootPkg/Driver/DarwinBoot.inf
+!endif
+
   #
   # Volume and power keys
   #
