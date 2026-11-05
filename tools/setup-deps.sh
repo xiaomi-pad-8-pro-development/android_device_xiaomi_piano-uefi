@@ -16,6 +16,7 @@ if [ ! -d "$mu" ]; then
 	git -C "$mu" submodule update -q --init --recursive
 	git -C "$mu/Mu_Basecore" apply "$PWD/uefi/patches/mu-basecore.patch"
 	git -C "$mu" apply "$PWD/uefi/patches/bootshim.patch"
+	git -C "$mu" apply "$PWD/uefi/patches/sec-entry-arg.patch"
 fi
 
 link() {

@@ -139,7 +139,12 @@
   INF Binaries/piano/QcomPkg/Drivers/DisplayDxe/DisplayDxe.inf
 !endif
 !else
+!ifdef UNIXNU
+  # XNU needs a linear framebuffer; ScaledFb is Blt-only.
+  INF SiliciumPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
+!else
   INF pianoPkg/Drivers/ScaledFbDxe/ScaledFbDxe.inf
+!endif
 !endif
 
 !if $(QCOM_DXE) == TRUE

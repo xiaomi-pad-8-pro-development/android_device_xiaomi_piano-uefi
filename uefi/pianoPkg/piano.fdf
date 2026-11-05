@@ -99,6 +99,7 @@ READ_LOCK_STATUS   = TRUE
 !ifdef UNIXNU
   INF UniXNUPkg/Application/UniXNU/UniXNU.inf
   INF UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
+  INF pianoPkg/Drivers/PianoPayloadDxe/PianoPayloadDxe.inf
   INF UniXNUPkg/Driver/UniXNURamDiskDxe/UniXNURamDiskDxe.inf
   INF DarwinBootPkg/Driver/DarwinBoot.inf
 !endif

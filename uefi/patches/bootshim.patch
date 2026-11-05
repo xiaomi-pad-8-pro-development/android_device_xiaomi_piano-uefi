@@ -1,17 +1,25 @@
 diff --git a/BootShim/BootShim.S b/BootShim/BootShim.S
-index 4d208553..5a41cc1c 100644
+index 4d208553..23393211 100644
 --- a/BootShim/BootShim.S
 +++ b/BootShim/BootShim.S
-@@ -7,7 +7,7 @@ _StackBase:
+@@ -1,3 +1,7 @@
++#ifndef EMBEDDED_PAYLOAD_SIZE
++#define EMBEDDED_PAYLOAD_SIZE 0
++#endif
++
+ _Head:
+   adr   x1, _Payload    /* Set _Entry address */
+   b     _Start          /* Jump to the real code */
+@@ -7,7 +11,7 @@ _StackBase:
    .quad FD_BASE         /* Text Offset */
  
  _StackSize:
 -  .quad FD_SIZE         /* Image Size */
-+  .quad FD_SIZE + (_Payload - _Head) /* Complete shim and payload */
++  .quad FD_SIZE + (_Payload - _Head) + EMBEDDED_PAYLOAD_SIZE /* Shim, firmware and payload */
    .quad 0               /* Flags */
    .quad 0               /* Reserved */
    .quad 0               /* Reserved */
-@@ -31,12 +31,33 @@ _CopyLoop:
+@@ -31,12 +35,42 @@ _CopyLoop:
    ldr   x5, =FD_BASE
  
  _Entry:
@@ -35,6 +43,15 @@ index 4d208553..5a41cc1c 100644
 +  ic    iallu
 +  dsb   sy
 +  isb
++
++  /* x2 and x3: the payload after the firmware volume, left in place. */
++  mov   x2, xzr
++  mov   x3, xzr
++#if EMBEDDED_PAYLOAD_SIZE > 0
++  ldr   x2, =FD_SIZE
++  add   x2, x1, x2
++  ldr   x3, =EMBEDDED_PAYLOAD_SIZE
++#endif
    br    x5
  
  _Dead:

@@ -1,0 +1,78 @@
+diff --git a/Silicon/Silicium/SiliciumPkg/Sec/AArch64/ModuleEntryPoint.S b/Silicon/Silicium/SiliciumPkg/Sec/AArch64/ModuleEntryPoint.S
+index 0c05ffa3..53572405 100644
+--- a/Silicon/Silicium/SiliciumPkg/Sec/AArch64/ModuleEntryPoint.S
++++ b/Silicon/Silicium/SiliciumPkg/Sec/AArch64/ModuleEntryPoint.S
+@@ -13,6 +13,13 @@
+ .set CTRL_SPAN_BIT, BIT23
+ 
+ ASM_FUNC (_ModuleEntryPoint)
++  // Keep x0, x2 and x3 for the platform: the address of the DT a
++  // Linux-style boot loader hands over, and the payload BootShim carries
++  // (address, size). The slots are in this section, which is in RAM here.
++  adr   x1, ASM_PFX (gSecEntryArgs)
++  stp   x0, x2, [x1]
++  str   x3, [x1, #16]
++
+   // Do Platform Specific Initialization
+   bl    ASM_PFX (PlatformAssemblyInitialize)
+ 
+@@ -61,3 +68,9 @@ ASM_PFX (MainEntryPoint):
+ 
+   // Do Infinite Spin
+   b     .
++
++  // x0, x2 and x3 of the previous stage, written once at entry
++  .align 3
++  .global ASM_PFX (gSecEntryArgs)
++ASM_PFX (gSecEntryArgs):
++  .quad 0, 0, 0
+diff --git a/Silicon/Silicium/SiliciumPkg/Sec/Sec.c b/Silicon/Silicium/SiliciumPkg/Sec/Sec.c
+index 8d586b35..0189bc6f 100644
+--- a/Silicon/Silicium/SiliciumPkg/Sec/Sec.c
++++ b/Silicon/Silicium/SiliciumPkg/Sec/Sec.c
+@@ -18,6 +18,9 @@
+ 
+ #include "Sec.h"
+ 
++// x0, x2 and x3 of the previous stage, saved by ModuleEntryPoint.S
++extern UINT64  gSecEntryArgs[3];
++
+ #ifndef MDEPKG_NDEBUG
+ STATIC
+ VOID
+@@ -130,6 +133,11 @@ SecMain (VOID)
+     return;
+   }
+ 
++  // Pass on what the previous stage handed over in x0 (a DT address for a
++  // Linux-style boot loader), then x2 and x3 (an embedded payload), so DXE
++  // drivers can use them. The first UINT64 stays x0.
++  BuildGuidDataHob (&gSiliciumEntryArgHobGuid, gSecEntryArgs, sizeof (gSecEntryArgs));
++
+   // Run Library Cconstructors
+   ProcessLibraryConstructorList ();
+ 
+diff --git a/Silicon/Silicium/SiliciumPkg/Sec/Sec.inf b/Silicon/Silicium/SiliciumPkg/Sec/Sec.inf
+index 79afd196..3a0a8a97 100644
+--- a/Silicon/Silicium/SiliciumPkg/Sec/Sec.inf
++++ b/Silicon/Silicium/SiliciumPkg/Sec/Sec.inf
+@@ -52,6 +52,7 @@
+ 
+ [Guids]
+   gArmMpCoreInfoGuid
++  gSiliciumEntryArgHobGuid
+ 
+ [Pcd]
+   gEfiMdeModulePkgTokenSpaceGuid.PcdFirmwareVersionString
+diff --git a/Silicon/Silicium/SiliciumPkg/SiliciumPkg.dec b/Silicon/Silicium/SiliciumPkg/SiliciumPkg.dec
+index 99cd6975..b3786173 100644
+--- a/Silicon/Silicium/SiliciumPkg/SiliciumPkg.dec
++++ b/Silicon/Silicium/SiliciumPkg/SiliciumPkg.dec
+@@ -8,6 +8,7 @@
+   Include                              # Root Include for the Package
+ 
+ [Guids]
++  gSiliciumEntryArgHobGuid            = { 0xDAEE82E6, 0x8090, 0x4E72, { 0xBF, 0xB9, 0x78, 0xC1, 0x3C, 0xD4, 0xE3, 0x59 } }
+   gSiliciumPkgTokenSpaceGuid          = { 0x055720A6, 0xA739, 0x0047, { 0xBE, 0xC1, 0x67, 0xFC, 0x38, 0x34, 0x54, 0x53 } }
+ 
+ [Protocols]

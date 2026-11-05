@@ -107,6 +107,9 @@
   SerialPortLib|pianoPkg/Library/MemorySerialPortLib/MemorySerialPortLib.inf
 
 !ifdef UNIXNU
+[BuildOptions]
+  *_*_*_CC_FLAGS = -DPIANO_UNIXNU
+
 [LibraryClasses]
   HobLib|MdePkg/Library/DxeHobLib/DxeHobLib.inf
   FdtLib|MdePkg/Library/BaseFdtLib/BaseFdtLib.inf
@@ -141,6 +144,7 @@
 !ifdef UNIXNU
   UniXNUPkg/Application/UniXNU/UniXNU.inf
   UniXNUPkg/Driver/UniXNUDxe/UniXNUDxe.inf
+  pianoPkg/Drivers/PianoPayloadDxe/PianoPayloadDxe.inf
   UniXNUPkg/Driver/UniXNURamDiskDxe/UniXNURamDiskDxe.inf
   DarwinBootPkg/Driver/DarwinBoot.inf
 !endif
@@ -154,7 +158,11 @@
   #
   # Console at half resolution with 2x2 pixels, so text is readable
   #
+!ifdef UNIXNU
+  SiliciumPkg/Drivers/SimpleFbDxe/SimpleFbDxe.inf
+!else
   pianoPkg/Drivers/ScaledFbDxe/ScaledFbDxe.inf
+!endif
 
   #
   # Android from Visor without a restart; copied to the ESP by make-esp.sh

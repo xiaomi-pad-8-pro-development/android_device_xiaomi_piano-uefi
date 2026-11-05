@@ -1,0 +1,39 @@
+## @file
+#  Points /chosen initrd at the payload BootShim carries after the firmware
+#  volume, for UniXNURamDiskDxe. The stock ABL replaces the boot image
+#  ramdisk on fastboot boot, so the payload rides in the kernel field.
+#
+#  Copyright (c) 2026, MUHAMMAD ALIF DANIEL BIN MOHD HAIRUL HEZZELIN.
+#
+#  SPDX-License-Identifier: BSD-2-Clause-Patent
+##
+
+[Defines]
+  INF_VERSION                    = 0x00010005
+  BASE_NAME                      = PianoPayloadDxe
+  FILE_GUID                      = 7C3E91A4-5B2D-4E8F-A16C-0D9F4B7E2A53
+  MODULE_TYPE                    = DXE_DRIVER
+  VERSION_STRING                 = 1.0
+  ENTRY_POINT                    = PianoPayloadInitialize
+
+[Sources]
+  PianoPayloadDxe.c
+
+[Packages]
+  MdePkg/MdePkg.dec
+  SiliciumPkg/SiliciumPkg.dec
+
+[LibraryClasses]
+  BaseLib
+  BaseMemoryLib
+  DebugLib
+  FdtLib
+  HobLib
+  UefiBootServicesTableLib
+  UefiDriverEntryPoint
+
+[Guids]
+  gSiliciumEntryArgHobGuid
+
+[Depex]
+  TRUE

@@ -73,6 +73,13 @@ STATIC EFI_GUID  mAndroidBootFileGuid = {
   0x2F6C1A4E, 0x8B3D, 0x4C57, { 0xA1, 0xE9, 0x6D, 0x0B, 0x7F, 0x3C, 0x5A, 0x21 }
 };
 
+#ifdef PIANO_UNIXNU
+// UniXNUPkg/Application/UniXNU (iPadOS loader), built with -D UNIXNU.
+STATIC EFI_GUID  mUniXNUFileGuid = {
+  0x9B665204, 0xA133, 0x47A2, { 0x93, 0x96, 0x9E, 0x2B, 0x37, 0x0A, 0x4E, 0x25 }
+};
+#endif
+
 // Start an application from our own firmware volume by its file GUID.
 STATIC
 VOID
@@ -149,6 +156,10 @@ DeviceBootManagerAfterConsole ()
   PianoResetHookInstall ();
   PianoDtbInstall ();
   PianoFastbootStart ();
+#ifdef PIANO_UNIXNU
+  // A UniXNU build boots its payload first; Visor stays the fallback.
+  StartFvApp (&mUniXNUFileGuid, L"UniXNU");
+#endif
   StartEspLoader ();
 
   StartFvApp (&mAndroidBootFileGuid, L"Android");
